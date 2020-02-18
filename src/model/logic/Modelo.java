@@ -26,59 +26,66 @@ public class Modelo {
 	/**
 	 * Atributos del modelo del mundo
 	 */
-	private IStack<Comparendo> stackComparendos;
-	
-	private IQueue<Comparendo> queueComparendos;
+	private IListaEncadenada<Comparendo> listaComparendos;
 		
 	/**
 	 * Constructor del modelo del mundo con capacidad predefinida
 	 */
 	public Modelo()
 	{
-		stackComparendos = new Stack<Comparendo>();
-		queueComparendos = new Queue<Comparendo>();
+		listaComparendos = new ListaEncadenada<Comparendo>();
 	}
 
-	public IStack<Comparendo> darStack()
+	public IListaEncadenada<Comparendo> darLista()
 	{
-		return stackComparendos;
-	}
-	
-	public IQueue<Comparendo> darQueue()
-	{
-		return queueComparendos;
+		return listaComparendos;
 	}
 	
 	/**
 	 * Servicio de consulta de numero de elementos presentes en el modelo 
 	 * @return numero de elementos presentes en el modelo
 	 */
-	public int darTamanoPila()
+	public int darLongitud()
 	{
-		return stackComparendos.size();
+		return listaComparendos.darLongitud();
 	}
-	
-	public int darTamanoCola()
-	{
-		return queueComparendos.size();
+
+	/**
+	 * Agregar dato al inicio
+	 * @param dato
+	 */
+	public void agregarInicio(Comparendo dato)
+	{	
+		listaComparendos.agregarInicio(dato);
 	}
 	
 	/**
-	 * Requerimiento de agregar datos a la pila
+	 * Agregar dato al final
 	 * @param dato
 	 */
-	public void agregarStack(Comparendo dato)
+	public void agregarFinal(Comparendo dato)
 	{
-		stackComparendos.push(dato);
+		listaComparendos.agregarFinal(dato);
 	}
 	
 	/**
-	 * Requerimiento de agregar datos a la cola
+	 * Requerimiento de agregar dato
 	 * @param dato
 	 */
-	public void agregarQueue(Comparendo dato)
+	public void agregar(Comparendo dato)
 	{
-		queueComparendos.enqueue(dato);
+		listaComparendos.agregar(dato);
+	}
+	
+	
+	/**
+	 * Requerimiento buscar dato
+	 * @param dato Dato a buscar
+	 * @return dato encontrado
+	 */
+	public Comparendo buscar(Comparendo dato)
+	{
+		return listaComparendos.buscar(dato);
 	}
 	
 	
@@ -87,14 +94,27 @@ public class Modelo {
 	 * @param dato Dato a eliminar
 	 * @return dato eliminado
 	 */
-	public Comparendo eliminarStack()
+	public Comparendo eliminar(Comparendo dato)
 	{
-		return stackComparendos.pop();
+		return listaComparendos.eliminar(dato);
 	}
 	
-	public Comparendo eliminarQueue()
+	/**
+	 * Elimina último dato de la lista.
+	 * @return dato Dato eliminado.
+	 */
+	public Comparendo eliminarFinal()
 	{
-		return queueComparendos.dequeue();
+		return listaComparendos.eliminarUltimo();
+	}
+	
+	/**
+	 * Eliminar primer elemento de la lista.
+	 * @return Dato eliminado.
+	 */
+	public Comparendo eliminarInicio()
+	{
+		return listaComparendos.eliminarPrimero();
 	}
 	
 	/**
@@ -103,7 +123,238 @@ public class Modelo {
 	 */
 	public Comparendo darPrimerComparendo()
 	{
-		return queueComparendos.peek();
+		return listaComparendos.darPrimero().darElemento();
+	}
+	
+	/**
+	 * Da el comparendo con el mayor ID
+	 * @return Comparendo con mayor ID
+	 */
+	public Comparendo darMayorId()
+	{
+		Comparendo comp = null;
+		int id = 0;
+		
+		for(Comparendo c:listaComparendos)
+		{			
+			if(c.darId()>id)
+			{
+				comp = c;
+				id = c.darId();
+			}
+		}
+		
+		return comp;
+	}
+	
+	/**
+	 * Da la menor longitud de todos los comparendos
+	 * @return menor longitud
+	 */
+	public double darMenorLongitud()
+	{
+		double lon = darPrimerComparendo().darLongitud();
+		
+		for(Comparendo c:listaComparendos)
+		{
+			if(c.darLongitud()<lon)
+			{
+				lon = c.darLongitud();
+			}
+		}
+		
+		return lon;
+	}
+	
+	/**
+	 * Da la menor latitud de todos los comparendos
+	 * @return menor latitud
+	 */
+	public double darMenorLatitud()
+	{
+		double lat = darPrimerComparendo().darLatitud();
+		
+		for(Comparendo c:listaComparendos)
+		{
+			if(c.darLatitud()<lat)
+			{
+				lat = c.darLatitud();
+			}
+		}
+		
+		return lat;
+	}
+	
+	/**
+	 * Da la mayor longitud de todos los comparendos
+	 * @return mayor longitud
+	 */
+	public double darMayorLongitud()
+	{
+		double lon = darPrimerComparendo().darLongitud();
+		
+		for(Comparendo c:listaComparendos)
+		{
+			if(c.darLongitud()>lon)
+			{
+				lon = c.darLongitud();
+			}
+		}
+		
+		return lon;
+	}
+	
+	/**
+	 * Da la mayor latitud de todos los comparendos
+	 * @return mayor latitud
+	 */
+	public double darMayorLatitud()
+	{
+		double lat = darPrimerComparendo().darLatitud();
+		
+		for(Comparendo c:listaComparendos)
+		{
+			if(c.darLatitud()>lat)
+			{
+				lat = c.darLatitud();
+			}
+		}
+		
+		return lat;
+	}
+	
+	public String darZonaMiniMax()
+	{
+		return "Límite inferior: ["+darMenorLatitud()+","+darMenorLongitud()+"] \n"
+				+ "Límite superior: ["+darMayorLatitud()+","+darMayorLongitud()+"]";
+	}
+	
+	/**
+	 * Método que se encarga de solucionar el requerimiento 1A
+	 * @param localidad, localidad del comparendo que se quiere buscar. 
+	 * @return primer comparendo con la localidad dada.
+	 */
+	public Comparendo darComparendoLocalidad(String localidad)
+	{
+		return null;
+	}
+	
+	/**
+	 * Método que se encarga de solucionar el requerimiento 2A
+	 * @param fecha, fecha que se realizaron los comparendos
+	 * @return todos los comparendos registrados dada una fecha. Resultados se presentan de manera ordenada por la infracción.
+	 */
+	public IListaEncadenada<Comparendo> darComparendosOrdenadosPorInfraccionEnFecha(String fecha)
+	{
+		return null;
+	}
+	
+	/**
+	 * Método que se encarga de solucionar el requerimiento 3A
+	 * @param fecha1 primera fecha que se quiere ver la cantidad de infracciones
+	 * @param fecha2 segunda fecha que se quiere ver la cantidad de infracciones 
+	 * @return Tabla donde se ve la cantidad de infracciones, y estas están ordenadas alfabeticamente.
+	 */
+	public String compararInfraccionPorFecha(String fechaIncial, String fechaFinal)
+	{
+		return null;
+	}
+	
+	/**
+	 * Da la cantidad de infracciones de un tipo en una fecha dada.
+	 * @param inf infraccion que se quiere observar
+	 * @param fecha fecha que se quiere contar la cantidad de infracciones
+	 * @return cantidad de infracciones de un tipo en una fecha dada.
+	 */
+	public int contarInfraccionesPorFecha(String inf, String fecha)
+	{
+		return 0;
+	}
+	
+	/**
+	 * Método que se encarga de solucionar el requerimiento 1B
+	 * @param inf, infraccion del comparendo que se quiere buscar
+	 * @return primer comparendo con la infracción dada.
+	 */
+	public Comparendo darComparendoInfraccion(String inf)
+	{
+		return null;
+	}
+	
+	/**
+	 * Método que se encarga de solucionar el requerimiento 2B
+	 * @param inf infraccion de los comparendos
+	 * @return Todos los comparendos con la infraccion dada, ordenados de menor a mayor según la fecha.
+	 */
+	public IListaEncadenada<Comparendo> darComparendosOrdenadosPorFechaConInfraccion(String inf)
+	{
+		return null;
+	}
+	
+	/**
+	 * Método que se encarga de solucionar el requerimiento 3B
+	 * @return Tabla donde se ve la cantidad de infracciones, y estas están ordenadas alfabeticamente.
+	 */
+	public String compararInfraccionPorServicio()
+	{
+		return null;
+	}
+	
+	/**
+	 * Da la cantidad de infracciones de un tipo de servicio dado.
+	 * @param inf infraccion que se quiere contar
+	 * @param serv servicio de la infracción
+	 * @return cantidad de infracciones de un tipo en una fecha dada.
+	 */
+	public int contarInfraccionesPorServicio(String serv, String inf )
+	{
+		return 0;
+	}
+	
+	/**
+	 * Método que se encarga de solucionar el requerimiento 1C
+	 * @param localidad localidad de los comparendos
+	 * @param fechaInicial fecha inicial intervalo tiempo
+	 * @param fechaFinal fecha final intervalo tiempo
+	 * @return tabal que dice la cantidad de infracciones dada una localidad y un intervalo de tiempo.
+	 */
+	public String darNumeroComparendosPorInfraccionEnLocalidadYFecha(String localidad, String fechaInicial, String fechaFinal)
+	{
+		return null;
+	}
+	
+	/**
+	 * Da la cantidad de infracciones de una localidad en un intervalo de tiempo dado. 
+	 * @param inf infraccion que se quiere contar
+	 * @param localidad localidad de la infraccion
+	 * @param fechaInicial fecha inicial intervalo
+	 * @param fechaFinal fecha final intervalo
+	 * @return cantidad infracciones en la localidad en el intervalo de tiempo dado
+	 */
+	public int cantidadInfraccionesPorLocalidadEIntervaloTiempoDado(String inf, String localidad, String fechaInicial, String fechaFinal)
+	{
+		return 0;
+	}
+	
+	/**
+	 * Da una tabla con N infracciones donde se muestra la cantidad de comparendos que la tienen en un intervalo de tiempo. 
+	 * @param n cantidad de infracciones
+	 * @param fechaInicial fecha inicial intervalo
+	 * @param fechaFinal fecha final intervalo.
+	 * @return Tabla con N infracciones con más repeticiones en un intervalo de tiempo, ordenadas de mayor a menor según la cantidad de comparendos que tienen la infracción.
+	 */
+	public String darNCodigosInfraccionConMasInfraccionesEnFecha(int n, String fechaInicial, String fechaFinal)
+	{
+		return null;
+	}
+	
+	/**
+	 * Genera tabla ASCII con las especificaciones dadas.
+	 * @return tabal ASCII que muestre el número total de comparendos por cada localidad
+	 */
+	public String generarASCII()
+	{
+		return null;
 	}
 	
 	/**
@@ -112,69 +363,7 @@ public class Modelo {
 	 */
 	public Comparendo darUltimoComparendo()
 	{
-		return stackComparendos.peek();
-	}
-	
-	public IQueue<Comparendo> darColaInfracciones()
-	{
-		
-		if(queueComparendos.isEmpty())
-		{
-			return null;
-		}
-		IQueue<Comparendo> cola = null;
-		IQueue<Comparendo> temporal = new Queue<Comparendo>();
-		Comparendo comparendo = queueComparendos.peek();
-		String inf = comparendo.darInfraccion();
-		int tamano = 0;
-		
-		while(!queueComparendos.isEmpty())
-		{
-			Comparendo c = queueComparendos.dequeue();	
-			if(c!=null)
-			{
-				if(c.darInfraccion().equals(inf))
-				{
-					temporal.enqueue(c);
-				}
-				else
-				{
-					if(temporal.size()>tamano)
-					{
-						cola = temporal;
-						tamano = temporal.size();
-					}
-					
-					inf = c.darInfraccion();
-					temporal = new Queue<Comparendo>();
-					temporal.enqueue(c);
-				}
-			}	
-		}
-		return cola;
-	}
-	
-	public IQueue<Comparendo> darColaNUltimos(int numeroComp, String inf)
-	{
-		if(stackComparendos.isEmpty())
-		{
-			return null;
-		}
-		IQueue<Comparendo> cola = new Queue<Comparendo>();
-		
-		while(!stackComparendos.isEmpty()&&cola.size()!=numeroComp)
-		{
-			Comparendo c = stackComparendos.pop();
-			
-			if(c!=null)
-			{
-				if(c.darInfraccion().equals(inf))
-				{
-					cola.enqueue(c);
-				}
-			}
-		}
-		return cola;
+		return listaComparendos.darUltimo().darElemento();
 	}
 
 	/**
@@ -192,8 +381,7 @@ public class Modelo {
 		 
 		 JsonArray arregloComparendos = obj.get("features").getAsJsonArray();  
 		 
-		 stackComparendos = new Stack<Comparendo>();
-		 queueComparendos = new Queue<Comparendo>();	
+		 listaComparendos = new ListaEncadenada<Comparendo>();
 		 
 		 for (JsonElement e: arregloComparendos) 	
 		 {
@@ -219,8 +407,7 @@ public class Modelo {
 						
 			Comparendo comparendo = new Comparendo(id, fecha, vehiculo, servicio, infraccion, descripcion, localidad,coordenadas);
 			
-			agregarQueue(comparendo);
-			agregarStack(comparendo);
+			agregarFinal(comparendo);
 		 }
 	}
 
