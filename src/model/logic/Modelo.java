@@ -305,11 +305,30 @@ public class Modelo {
 	 * @param inf, infraccion del comparendo que se quiere buscar
 	 * @return primer comparendo con la infracción dada.
 	 */
-	public Comparendo darComparendoInfraccion(String inf)
+	public Comparendo darComparendoInfraccion(String pInfraccion) throws Exception
 	{
-		return null;
+		//CASO 1: La lista no se encuentra inicializada.
+		if(listaComparendos.darPrimero()==null)
+		{
+			throw new Exception("Por favor inialice la lista.\n");
+		}
+		//CASO 2: Lista inicializada y se busca el comparendo por infracción.
+		else
+		{
+			NodoLista<Comparendo> actual=listaComparendos.darPrimero();
+			while(actual!=null)
+			{
+				if(actual.darElemento().darInfraccion().equals(pInfraccion))
+				{
+					return actual.darElemento();
+				}
+				actual=actual.darSiguiente();
+			}
+		}
+		//CASO 3: No se encuentra la infracción dentro de la lista.
+		throw new Exception("No se encontró un comparendo con la infracción dada.\n");
 	}
-	
+
 	/**
 	 * Método que se encarga de solucionar el requerimiento 2B
 	 * @param inf infraccion de los comparendos

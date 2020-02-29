@@ -18,7 +18,7 @@ public class Controller {
 	/* Instancia de la Vista*/
 	private View view;
 	
-	public final static String RUTA = "./data/comparendos_dei_2018_small.geojson";
+	public final static String RUTA = "./data/comparendos_dei_2018.geojson";
 
 	
 	/**
@@ -126,7 +126,18 @@ public class Controller {
 					case 4:
 						view.printMessage("--------- \n ");
 						
-						view.printMessage("Aún no se ha implementado el requerimiento");						
+						view.printMessage("Ingrese una infracción determinada:");	
+						Scanner lector4=new Scanner(System.in);
+						String infraccion = lector4.next();		
+						try
+						{
+							Comparendo buscado=modelo.darComparendoInfraccion(infraccion);
+							view.printMessage(buscado.toString()+"\n");
+						}
+						catch (Exception e)
+						{
+							view.printMessage(e.getMessage());
+						}
 						break;
 					
 					case 5:
