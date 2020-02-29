@@ -1,21 +1,19 @@
 package model.logic;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 
 import model.data_structures.IListaEncadenada;
-import model.data_structures.IQueue;
-import model.data_structures.IStack;
 import model.data_structures.ListaEncadenada;
-import model.data_structures.Queue;
-import model.data_structures.Stack;
+import model.data_structures.NodoLista;
 
 
 /**
@@ -236,7 +234,18 @@ public class Modelo {
 	 */
 	public Comparendo darComparendoLocalidad(String localidad)
 	{
-		return null;
+		Comparendo c = null;
+		
+		NodoLista<Comparendo> actual = listaComparendos.darPrimero();
+		
+		while(actual!=null&&!actual.darElemento().darLocalidad().equalsIgnoreCase(localidad))
+		{
+			actual = actual.darSiguiente();
+		}
+		
+		c = actual.darElemento();
+		
+		return c;
 	}
 	
 	/**
@@ -244,9 +253,29 @@ public class Modelo {
 	 * @param fecha, fecha que se realizaron los comparendos
 	 * @return todos los comparendos registrados dada una fecha. Resultados se presentan de manera ordenada por la infracción.
 	 */
-	public IListaEncadenada<Comparendo> darComparendosOrdenadosPorInfraccionEnFecha(String fecha)
+	public Comparable[] darComparendosOrdenadosPorInfraccionEnFecha(Date fecha)
 	{
-		return null;
+		IListaEncadenada<Comparendo> lista = new ListaEncadenada<Comparendo>();
+		Comparendo.ComparadorXInfraccion compXInfraccion = new Comparendo.ComparadorXInfraccion();
+		Comparendo.ComparadorXFecha compXFecha = new Comparendo.ComparadorXFecha();
+
+		
+        NodoLista<Comparendo> actual = listaComparendos.darPrimero();
+		
+		while(actual!=null)
+		{
+			if(actual.darElemento().darFecha().compareTo(fecha)==0)
+			{
+				lista.agregarFinal(actual.darElemento());
+			}
+			actual = actual.darSiguiente();
+		}
+		
+		Comparable[] arreglo = lista.darArreglo();
+		
+		Ordenamientos.mergeSort(arreglo, compXInfraccion);
+		
+		return arreglo;
 	}
 	
 	/**
@@ -266,7 +295,7 @@ public class Modelo {
 	 * @param fecha fecha que se quiere contar la cantidad de infracciones
 	 * @return cantidad de infracciones de un tipo en una fecha dada.
 	 */
-	public int contarInfraccionesPorFecha(String inf, String fecha)
+	public int contarInfraccionesPorFecha(String inf, Date fecha)
 	{
 		return 0;
 	}
@@ -366,49 +395,46 @@ public class Modelo {
 		return listaComparendos.darUltimo().darElemento();
 	}
 
+	
+	// Solucion de carga de datos publicada al curso Estructuras de Datos 2020-10
 	/**
 	 * Método que carga los comparendos
 	 * @param ruta Rita archivo con los comparendos
 	 * @throws FileNotFoundException si no encuentra el archivo
 	 */
-	public void cargarComparendos(String ruta) throws FileNotFoundException
-	{
-		 File archivo = new File(ruta);
-		 
-		 
-		 JsonReader lector = new JsonReader(new FileReader(archivo));
-		 JsonObject obj = JsonParser.parseReader(lector).getAsJsonObject();
-		 
-		 JsonArray arregloComparendos = obj.get("features").getAsJsonArray();  
-		 
-		 listaComparendos = new ListaEncadenada<Comparendo>();
-		 
-		 for (JsonElement e: arregloComparendos) 	
-		 {
-			
-			JsonObject propiedades = e.getAsJsonObject().get("properties").getAsJsonObject();
-			
-			int id = propiedades.get("OBJECTID").getAsInt();
-			String fecha = propiedades.get("FECHA_HORA").getAsString();
-			String vehiculo = propiedades.get("CLASE_VEHI").getAsString();
-			String servicio = propiedades.get("TIPO_SERVI").getAsString();
-			String infraccion = propiedades.get("INFRACCION").getAsString();
-			String descripcion = propiedades.get("DES_INFRAC").getAsString();
-			String localidad = propiedades.get("LOCALIDAD").getAsString();
+	public void cargarComparendos(String ruta) throws FileNotFoundException, ParseException
+	{		
+		
+		listaComparendos = new ListaEncadenada<Comparendo>();
 
-			JsonObject geometria = e.getAsJsonObject().get("geometry").getAsJsonObject();
-			JsonArray coords = geometria.get("coordinates").getAsJsonArray();
-			double[] coordenadas = new double[2];
+		JsonReader reader = new JsonReader(new FileReader(ruta));
+		JsonElement elem = JsonParser.parseReader(reader);
+		JsonArray e2 = elem.getAsJsonObject().get("features").getAsJsonArray();
+		
+		
+		SimpleDateFormat parser=new SimpleDateFormat("yyyy/MM/dd");
+
+		for(JsonElement e: e2) {
+			int OBJECTID = e.getAsJsonObject().get("properties").getAsJsonObject().get("OBJECTID").getAsInt();
 			
-			for (int j = 0; j < coordenadas.length; j++) 
-			{
-				coordenadas[j]=coords.get(j).getAsDouble();
-			}
-						
-			Comparendo comparendo = new Comparendo(id, fecha, vehiculo, servicio, infraccion, descripcion, localidad,coordenadas);
+			String s = e.getAsJsonObject().get("properties").getAsJsonObject().get("FECHA_HORA").getAsString();	
+			Date FECHA_HORA = parser.parse(s); 
 			
-			agregarFinal(comparendo);
-		 }
+			String MEDIO_DETE = e.getAsJsonObject().get("properties").getAsJsonObject().get("MEDIO_DETE").getAsString();
+			String CLASE_VEHI = e.getAsJsonObject().get("properties").getAsJsonObject().get("CLASE_VEHI").getAsString();
+			String TIPO_SERVI = e.getAsJsonObject().get("properties").getAsJsonObject().get("TIPO_SERVI").getAsString();
+			String INFRACCION = e.getAsJsonObject().get("properties").getAsJsonObject().get("INFRACCION").getAsString();
+			String DES_INFRAC = e.getAsJsonObject().get("properties").getAsJsonObject().get("DES_INFRAC").getAsString();	
+			String LOCALIDAD = e.getAsJsonObject().get("properties").getAsJsonObject().get("LOCALIDAD").getAsString();
+
+			double longitud = e.getAsJsonObject().get("geometry").getAsJsonObject().get("coordinates").getAsJsonArray()
+					.get(0).getAsDouble();
+			
+			double latitud = e.getAsJsonObject().get("geometry").getAsJsonObject().get("coordinates").getAsJsonArray()
+					.get(1).getAsDouble();
+
+			Comparendo c = new Comparendo(OBJECTID, FECHA_HORA, DES_INFRAC, MEDIO_DETE, CLASE_VEHI, TIPO_SERVI, INFRACCION, LOCALIDAD, longitud, latitud);
+			listaComparendos.agregarFinal(c);
+		}		
 	}
-
 }

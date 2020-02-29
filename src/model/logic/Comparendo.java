@@ -1,5 +1,8 @@
 package model.logic;
 
+import java.util.Comparator;
+import java.util.Date;
+
 public class Comparendo implements Comparable<Comparendo>
 {
 	/**
@@ -10,7 +13,12 @@ public class Comparendo implements Comparable<Comparendo>
 	/**
 	 * Fecha comparendo
 	 */
-	private String fecha;
+	private Date fecha;
+	
+	/**
+	 * Medio de detencion
+	 */
+	private String detencion;
 
 	/**
 	 * Vehiculo comparedo
@@ -38,9 +46,14 @@ public class Comparendo implements Comparable<Comparendo>
 	private String localidad;
 	
 	/**
-	 * Coordenadas comparendo
+	 * Latitud comparendo
 	 */
-	private double[] coordenadas;
+	private double latitud;
+	
+	/**
+	 * Longitud comparendo
+	 */
+	private double longitud;
 	
 	/**
 	 * Metodo constructor para crear un comparendo
@@ -53,7 +66,7 @@ public class Comparendo implements Comparable<Comparendo>
 	 * @param pLocalidad localidad comparendo
 	 * @param pCoordenadas coordenadas comparendo
 	 */
-	public Comparendo(int pId, String pFecha, String pVehiculo, String pServicio, String pInfraccion, String pDescripcion, String pLocalidad, double[] pCoordenadas)
+	public Comparendo(int pId, Date pFecha, String pDescripcion, String pDetencion, String pVehiculo, String pServicio, String pInfraccion, String pLocalidad, double pLongitud, double pLatitud)
 	{
 		id = pId;
 		fecha = pFecha;
@@ -62,7 +75,9 @@ public class Comparendo implements Comparable<Comparendo>
 		infraccion = pInfraccion;
 		des_infrac = pDescripcion;
 		localidad = pLocalidad;
-		coordenadas = pCoordenadas;
+		longitud = pLongitud;
+		latitud = pLatitud;
+		detencion = pDetencion;
 	}
 	
 	/**
@@ -77,7 +92,7 @@ public class Comparendo implements Comparable<Comparendo>
 	 * Da la fecha del comparendo
 	 * @return Fecha comparendo
 	 */
-	public String darFecha() {
+	public Date darFecha() {
 		return fecha;
 	}
 
@@ -121,13 +136,7 @@ public class Comparendo implements Comparable<Comparendo>
 		return localidad;
 	}
 
-	/**
-	 * Da las coordenadas del com
-	 * @return
-	 */
-	public double[] darCoordenadas() {
-		return coordenadas;
-	}
+
 	
 	/**
 	 * Da la longitud de la coordenada
@@ -135,7 +144,7 @@ public class Comparendo implements Comparable<Comparendo>
 	 */
 	public double darLongitud()
 	{
-		return coordenadas[0];
+		return longitud;
 	}
 	
 	/**
@@ -144,9 +153,26 @@ public class Comparendo implements Comparable<Comparendo>
 	 */
 	public double darLatitud()
 	{
-		return coordenadas[1];
+		return latitud;
 	}
 
+	/**
+	 * Clase 
+	 */
+	public static class ComparadorXFecha implements Comparator<Comparendo>{
+		
+		public int compare(Comparendo c1, Comparendo c2){
+			return c1.darFecha().compareTo(c2.darFecha());
+		}
+	}
+	
+    public static class ComparadorXInfraccion implements Comparator<Comparendo>{
+		
+		public int compare(Comparendo c1, Comparendo c2){
+			return c2.darInfraccion().compareTo(c1.darInfraccion());
+		}
+	}
+	
 	@Override
 	/**
 	 * Compara los comparendos por codigo
@@ -159,9 +185,9 @@ public class Comparendo implements Comparable<Comparendo>
 	/**
 	 * Da la informacion del comparendo
 	 */
-	public String toString()
-	{
-		return infraccion+", "+id+", "+fecha+", "+vehiculo+", "+servicio+", "+localidad+".";
+	public String toString() {
+		return "Comparendo [OBJECTID: " + id + ", FECHA: " + fecha + ", INFRACCION:" + infraccion
+				+ ", VEHICULO:" + vehiculo + ", SERVICIO:" + servicio + ", LOCALIDAD: " + localidad;
 	}
 
 	

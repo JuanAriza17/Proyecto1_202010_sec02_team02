@@ -1,10 +1,11 @@
 package controller;
 
 import java.io.FileNotFoundException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Scanner;
 
-import model.data_structures.IQueue;
-import model.data_structures.IStack;
 import model.logic.Comparendo;
 import model.logic.Modelo;
 import view.View;
@@ -33,9 +34,10 @@ public class Controller {
 	public void run() 
 	{
 		Scanner lector = new Scanner(System.in);
-		IQueue<Comparendo> cola = null;
 		boolean fin = false;
-		int id = 0;
+		Comparendo c = null;
+		Comparable[] arreglo = null;
+		SimpleDateFormat parser=new SimpleDateFormat("yyyy/MM/dd");
 
 		while( !fin ){
 			view.printMenu();
@@ -58,16 +60,59 @@ public class Controller {
 					    	view.printMessage("No se pudo crear la lista porque no existe el archivo de comparendos");
 						    view.printMessage("\n---------\n" + "Numero actual de comparendos en la lista " + modelo.darLongitud()+"\n");	
 					    }
+					    catch(ParseException e)
+					    {
+					    	view.printMessage("Ocurrió un error cargando los comparendos");
+						    view.printMessage("\n---------\n" + "Numero actual de comparendos en la lista " + modelo.darLongitud()+"\n");	
+						    
+					    }
+					    
 					    break;
 
 					case 1:
 						view.printMessage("--------- \n ");
+						view.printMessage("Ingrese la localidad");
+						String localidad = lector.next();
+						c = modelo.darComparendoLocalidad(localidad);
 						
-						view.printMessage("Aún no se ha implementado el requerimiento");						
+						if(c==null)
+						{
+							view.printMessage("No se encontró el comparendo con la infracción dada.\n");
+						}
+						else
+						{
+							view.printMessage(c.toString()+"\n");						
+						}	
+						
 						break;
 					
 					case 2:
 						view.printMessage("--------- \n ");
+						
+						view.printMessage("Ingrese una fecha de la forma yyyy/MM/dd");
+						String f = lector.next();
+						try
+						{
+							Date fecha = parser.parse(f);
+							arreglo = modelo.darComparendosOrdenadosPorInfraccionEnFecha(fecha);
+							
+							if(arreglo==null||arreglo.length==0)
+							{
+								view.printMessage("No se encontraron comparendos en esa fecha");
+							}
+							else
+							{
+								for(Comparable com: arreglo)
+								{
+									view.printMessage(com.toString());
+								}
+							}
+						}
+						catch(ParseException e)
+						{
+							view.printMessage("No ingresó la fecha en el formato correcto");
+						}
+						
 						
 						view.printMessage("Aún no se ha implementado el requerimiento");						
 						break;
