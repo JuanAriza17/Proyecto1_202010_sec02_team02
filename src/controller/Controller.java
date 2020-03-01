@@ -18,7 +18,7 @@ public class Controller {
 	/* Instancia de la Vista*/
 	private View view;
 	
-	public final static String RUTA = "./data/comparendos_dei_2018.geojson";
+	public final static String RUTA = "./data/comparendos_dei_2018_small.geojson";
 
 	
 	/**
@@ -34,6 +34,7 @@ public class Controller {
 	public void run() 
 	{
 		Scanner lector = new Scanner(System.in);
+		boolean cargado = false;
 		boolean fin = false;
 		Comparendo c = null;
 		Comparable[] arreglo = null;
@@ -50,6 +51,7 @@ public class Controller {
 					    try
 					    {
 					    	modelo.cargarComparendos(RUTA);
+					    	cargado = true;
 					    	view.printMessage("Comparendos cargados a la lista");
 						    view.printMessage("\n---------\n" + "Numero actual de comparendos en la lista " + modelo.darLongitud()+"\n");	
 					    	view.printMessage("Comparendo con mayor ID: \n"+modelo.darMayorId().toString()+"\n");
@@ -71,77 +73,124 @@ public class Controller {
 
 					case 1:
 						view.printMessage("--------- \n ");
-						view.printMessage("Ingrese la localidad");
-						String localidad = lector.next();
-						c = modelo.darComparendoLocalidad(localidad);
-						
-						if(c==null)
+						if(cargado)
 						{
-							view.printMessage("No se encontró el comparendo con la infracción dada.\n");
+							view.printMessage("Ingrese la localidad:");
+							String localidad = lector.next();
+							c = modelo.darComparendoLocalidad(localidad);
+							
+							if(c==null)
+							{
+								view.printMessage("No se encontró el comparendo con la infracción dada.\n");
+							}
+							else
+							{
+								view.printMessage(c.toString()+"\n");						
+							}	
 						}
 						else
 						{
-							view.printMessage(c.toString()+"\n");						
-						}	
+							view.printMessage("No ha inicializado la lista");
+						}
 						
 						break;
 					
 					case 2:
 						view.printMessage("--------- \n ");
 						
-						view.printMessage("Ingrese una fecha de la forma yyyy/MM/dd");
-						String f = lector.next();
-						try
+						if(cargado)
 						{
-							Date fecha = parser.parse(f);
-							arreglo = modelo.darComparendosOrdenadosPorInfraccionEnFecha(fecha);
-							
-							if(arreglo==null||arreglo.length==0)
+							view.printMessage("Ingrese una fecha de la forma yyyy/MM/dd");
+							String f = lector.next();
+							try
 							{
-								view.printMessage("No se encontraron comparendos en esa fecha");
-							}
-							else
-							{
-								for(Comparable com: arreglo)
+								Date fecha = parser.parse(f);
+								arreglo = modelo.darComparendosOrdenadosPorInfraccionEnFecha(fecha);
+								
+								if(arreglo==null||arreglo.length==0)
 								{
-									view.printMessage(com.toString());
+									view.printMessage("No se encontraron comparendos en esa fecha");
+								}
+								else
+								{
+									for(Comparable com: arreglo)
+									{
+										view.printMessage(com.toString());
+									}
 								}
 							}
+							catch(ParseException e)
+							{
+								view.printMessage("No ingresó la fecha en el formato correcto");
+							}
 						}
-						catch(ParseException e)
+						else
 						{
-							view.printMessage("No ingresó la fecha en el formato correcto");
+							view.printMessage("No ha inicializado la lista");
 						}
 						
 						
-						view.printMessage("Aún no se ha implementado el requerimiento");						
 						break;
 						
 					case 3:
 						view.printMessage("--------- \n ");
 						
-						view.printMessage("Aún no se ha implementado el requerimiento");						
+						if(cargado)
+						{
+							view.printMessage("Ingrese la primera fecha de la forma yyyy/MM/dd");
+							String f1 = lector.next();
+							
+							view.printMessage("Ingrese la segunda fecha de la forma yyyy/MM/dd");
+							String f2 = lector.next();
+							
+							try
+							{
+								Date fecha1 = parser.parse(f1);
+								Date fecha2 = parser.parse(f2);
+								
+								String mensaje = modelo.compararInfraccionPorFecha(fecha1, fecha2);
+								
+								view.printMessage(mensaje);
+
+							}
+							catch(ParseException e)
+							{
+								view.printMessage("No ingresó la fecha en el formato correcto");
+							}
+						}
+						else
+						{
+							view.printMessage("No ha inicializado la lista");
+						}
+
+						
 						break;
 						
 					case 4:
 						view.printMessage("--------- \n ");
 						
-						view.printMessage("Ingrese una infracción determinada:");	
-						Scanner lector4=new Scanner(System.in);
-						String infraccion = lector4.next();		
-						try
+						if(cargado)
 						{
-							Comparendo buscado=modelo.darComparendoInfraccion(infraccion);
-							view.printMessage(buscado.toString()+"\n");
+							
 						}
-						catch (Exception e)
+						else
 						{
-							view.printMessage(e.getMessage());
+							view.printMessage("No ha inicializado la lista");
 						}
+						view.printMessage("Aún no se ha implementado el requerimiento");						
 						break;
 					
 					case 5:
 						view.printMessage("--------- \n ");
+						
+						if(cargado)
+						{
+							
+						}
+						else
+						{
+							view.printMessage("No ha inicializado la lista");
+						}
 						
 						view.printMessage("Aún no se ha implementado el requerimiento");						
 						break;
@@ -149,11 +198,29 @@ public class Controller {
 					case 6:
 						view.printMessage("--------- \n ");
 						
+						if(cargado)
+						{
+							
+						}
+						else
+						{
+							view.printMessage("No ha inicializado la lista");
+						}
+						
 						view.printMessage("Aún no se ha implementado el requerimiento");						
 						break;
 					
 					case 7:
 						view.printMessage("--------- \n ");
+						
+						if(cargado)
+						{
+							
+						}
+						else
+						{
+							view.printMessage("No ha inicializado la lista");
+						}
 						
 						view.printMessage("Aún no se ha implementda el requerimiento");						
 						break;
@@ -161,11 +228,29 @@ public class Controller {
 					case 8:
 						view.printMessage("--------- \n ");
 						
+						if(cargado)
+						{
+							
+						}
+						else
+						{
+							view.printMessage("No ha inicializado la lista");
+						}
+						
 						view.printMessage("Aún no se ha implementado el requerimiento");						
 						break;
 					
 					case 9:
 						view.printMessage("--------- \n ");
+						
+						if(cargado)
+						{
+							
+						}
+						else
+						{
+							view.printMessage("No ha inicializado la lista");
+						}
 						
 						view.printMessage("Aún no se ha implementda el requerimiento");						
 						break;

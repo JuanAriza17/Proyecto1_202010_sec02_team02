@@ -166,7 +166,14 @@ public class Comparendo implements Comparable<Comparendo>
 		}
 	}
 	
-    public static class ComparadorXInfraccion implements Comparator<Comparendo>{
+    public static class ComparadorXInfraccionAscendente implements Comparator<Comparendo>{
+		
+		public int compare(Comparendo c1, Comparendo c2){
+			return c1.darInfraccion().compareTo(c2.darInfraccion());
+		}
+	}
+
+    public static class ComparadorXInfraccionDescendente implements Comparator<Comparendo>{
 		
 		public int compare(Comparendo c1, Comparendo c2){
 			return c2.darInfraccion().compareTo(c1.darInfraccion());

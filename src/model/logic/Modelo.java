@@ -11,6 +11,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 
+import model.data_structures.ArregloDinamico;
 import model.data_structures.IListaEncadenada;
 import model.data_structures.ListaEncadenada;
 import model.data_structures.NodoLista;
@@ -256,9 +257,7 @@ public class Modelo {
 	public Comparable[] darComparendosOrdenadosPorInfraccionEnFecha(Date fecha)
 	{
 		IListaEncadenada<Comparendo> lista = new ListaEncadenada<Comparendo>();
-		Comparendo.ComparadorXInfraccion compXInfraccion = new Comparendo.ComparadorXInfraccion();
-		Comparendo.ComparadorXFecha compXFecha = new Comparendo.ComparadorXFecha();
-
+		Comparendo.ComparadorXInfraccionDescendente compXInfraccion = new Comparendo.ComparadorXInfraccionDescendente();
 		
         NodoLista<Comparendo> actual = listaComparendos.darPrimero();
 		
@@ -284,51 +283,81 @@ public class Modelo {
 	 * @param fecha2 segunda fecha que se quiere ver la cantidad de infracciones 
 	 * @return Tabla donde se ve la cantidad de infracciones, y estas están ordenadas alfabeticamente.
 	 */
-	public String compararInfraccionPorFecha(String fechaIncial, String fechaFinal)
+	public String compararInfraccionPorFecha(Date fecha1, Date fecha2)
 	{
-		return null;
+		String mensaje = "Infracción   |"+fecha1+"     |"+fecha2.toString()+"\n";
+		IListaEncadenada<Comparendo> lista = new ListaEncadenada<Comparendo>();
+		
+		NodoLista<Comparendo> actual = listaComparendos.darPrimero();
+		while(actual!=null)
+		{
+			if(actual.darElemento().darFecha().compareTo(fecha1)==0||actual.darElemento().darFecha().compareTo(fecha2)==0)
+			{
+				lista.agregarFinal(actual.darElemento());
+			}
+			actual = actual.darSiguiente();
+		}
+		
+		Comparable[] com = lista.darArreglo();
+		Comparendo.ComparadorXInfraccionAscendente compXInfraccion = new Comparendo.ComparadorXInfraccionAscendente();
+		Ordenamientos.mergeSort(com, compXInfraccion);
+		
+		Comparendo cp = (Comparendo) com[0];
+		String infraccion = cp.darInfraccion();
+		int contador1 = 0;
+		int contador2 = 0;
+
+		for (int i = 0; i < com.length; i++)
+		{
+			cp = (Comparendo) com[i];
+			
+			if(cp.darInfraccion().compareTo(infraccion)==0)
+			{
+				if(cp.darFecha().compareTo(fecha1)==0)
+				{
+					contador1++;
+				}
+				else if(cp.darFecha().compareTo(fecha2)==0)
+				{
+					contador2++;
+				}
+			}
+			else
+			{
+				mensaje+=infraccion+"    |"+contador1+"    |"+contador2 +"\n";
+				
+				infraccion = cp.darInfraccion();
+				
+				if(cp.darFecha().compareTo(fecha1)==0)
+				{
+					contador1=1;
+					contador2=0;
+				}
+				else if(cp.darFecha().compareTo(fecha2)==0)
+				{
+					contador2=1;
+					contador1=0;
+				}
+			}
+		}
+		
+		mensaje+=infraccion+"    |"+contador1+"    |"+contador2;
+		
+		
+		return mensaje;
 	}
 	
-	/**
-	 * Da la cantidad de infracciones de un tipo en una fecha dada.
-	 * @param inf infraccion que se quiere observar
-	 * @param fecha fecha que se quiere contar la cantidad de infracciones
-	 * @return cantidad de infracciones de un tipo en una fecha dada.
-	 */
-	public int contarInfraccionesPorFecha(String inf, Date fecha)
-	{
-		return 0;
-	}
 	
 	/**
 	 * Método que se encarga de solucionar el requerimiento 1B
 	 * @param inf, infraccion del comparendo que se quiere buscar
 	 * @return primer comparendo con la infracción dada.
 	 */
-	public Comparendo darComparendoInfraccion(String pInfraccion) throws Exception
+	public Comparendo darComparendoInfraccion(String inf)
 	{
-		//CASO 1: La lista no se encuentra inicializada.
-		if(listaComparendos.darPrimero()==null)
-		{
-			throw new Exception("Por favor inialice la lista.\n");
-		}
-		//CASO 2: Lista inicializada y se busca el comparendo por infracción.
-		else
-		{
-			NodoLista<Comparendo> actual=listaComparendos.darPrimero();
-			while(actual!=null)
-			{
-				if(actual.darElemento().darInfraccion().equals(pInfraccion))
-				{
-					return actual.darElemento();
-				}
-				actual=actual.darSiguiente();
-			}
-		}
-		//CASO 3: No se encuentra la infracción dentro de la lista.
-		throw new Exception("No se encontró un comparendo con la infracción dada.\n");
+		return null;
 	}
-
+	
 	/**
 	 * Método que se encarga de solucionar el requerimiento 2B
 	 * @param inf infraccion de los comparendos
