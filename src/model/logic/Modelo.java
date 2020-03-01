@@ -11,6 +11,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 
+import model.data_structures.ArregloDinamico;
 import model.data_structures.IListaEncadenada;
 import model.data_structures.ListaEncadenada;
 import model.data_structures.NodoLista;
@@ -18,7 +19,8 @@ import model.data_structures.NodoLista;
 
 /**
  * Definicion del modelo del mundo
- *
+ *@author Juan Andrés Ariza Gacharná 201911442
+ *@author Sergio Julian Zona Moreno 201914936
  */
 public class Modelo { 
 	/**
@@ -285,21 +287,10 @@ public class Modelo {
 	public String compararInfraccionPorFecha(Date fecha1, Date fecha2)
 	{
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+		String mensaje = "Comparación de comparendos por Infracción en dos fechas\nInfracción | "+sdf.format(fecha1)+" | "+sdf.format(fecha2)+"\n";
+		
 
-		String mensaje = "Infracción   |"+sdf.format(fecha1)+"     |"+sdf.format(fecha2)+"\n";
-		IListaEncadenada<Comparendo> lista = new ListaEncadenada<Comparendo>();
-
-		NodoLista<Comparendo> actual = listaComparendos.darPrimero();
-		while(actual!=null)
-		{
-			if(actual.darElemento().darFecha().compareTo(fecha1)==0||actual.darElemento().darFecha().compareTo(fecha2)==0)
-			{
-				lista.agregarFinal(actual.darElemento());
-			}
-			actual = actual.darSiguiente();
-		}
-
-		Comparable[] com = lista.darArreglo();
+		Comparable[] com = listaComparendos.darArreglo();
 		Comparendo.ComparadorXInfraccionAscendente compXInfraccion = new Comparendo.ComparadorXInfraccionAscendente();
 		Ordenamientos.mergeSort(com, compXInfraccion);
 
@@ -318,25 +309,53 @@ public class Modelo {
 				{
 					contador1++;
 				}
-				else
+				else if(cp.darFecha().compareTo(fecha2)==0)
 				{
 					contador2++;
 				}
 			}
 			else
 			{
-				mensaje+=infraccion+"          |"+contador1+"              |"+contador2 +"\n";
+				if(contador1!=0||contador2!=0)
+				{
+					String espacios1="";
+					for(int j=0;j<11-infraccion.length(); ++j)
+					{
+						espacios1+=" ";
+					}
+					String espacios2="";
+					for(int j=0;j<11-Integer.toString(contador1).length(); ++j)
+					{
+						espacios2+=" ";
+					}
+					
+					mensaje+=infraccion+espacios1+"| "+contador1+espacios2+"| "+contador2 +"\n";
 
+				}	
+				
 				infraccion = cp.darInfraccion();
-
 				contador1=cp.darFecha().compareTo(fecha1)==0?1:0;
 				contador2=cp.darFecha().compareTo(fecha2)==0?1:0;
 
 			}
 		}
 
-		mensaje+=infraccion+"          |"+contador1+"              |"+contador2 +"\n";
+		if(contador1!=0||contador2!=0)
+		{
+			String espacios1="";
+			for(int j=0;j<11-infraccion.length(); ++j)
+			{
+				espacios1+=" ";
+			}
+			String espacios2="";
+			for(int j=0;j<11-Integer.toString(contador1).length(); ++j)
+			{
+				espacios2+=" ";
+			}
+			
+			mensaje+=infraccion+espacios1+"| "+contador1+espacios2+"| "+contador2 +"\n";
 
+		}
 
 		return mensaje;
 	}
@@ -442,7 +461,7 @@ public class Modelo {
 		int contadorTotalInfracciones=0;
 		int contadorTotalInfraccionesCumplen=0;
 		int contadorTotalCodigoInfracciones=0;
-		impresion+="Infracción | Particular | Público \n";
+		impresion+="Comparación de comparendos por Infracción en servicio Particular y servicio Público\nInfracción | Particular | Público \n";
 		for(int i=0; i<arreglo.length; ++i)
 		{
 			++contadorTotalInfracciones;
@@ -478,10 +497,28 @@ public class Modelo {
 			//Se mantiene el código del comparendo, aumentan los contadores según el tipo.
 			else if(actual.darInfraccion().equals(infraccion))
 			{
-				contadorParticular+=actual.darServicio().equals("Particular")?1:0;
-				contadorPublico+=actual.darServicio().equals("Público")?1:0;
+				contadorParticular+=actual.darServicio().equalsIgnoreCase("Particular")?1:0;
+				contadorPublico+=actual.darServicio().equalsIgnoreCase("Particular")?0:1;
 			}
 
+		}
+		
+		//Ciclos para dejar espacios y cumplir con el formato establecido, no generan mucha complejidad, por lo que el algoritmo se mantiene con la misma.
+		String espacios1="";
+		for(int j=0;j<10-infraccion.length(); ++j)
+		{
+			espacios1+=" ";
+		}
+		String espacios2="";
+		for(int j=0;j<10-Integer.toString(contadorParticular).length(); ++j)
+		{
+			espacios2+=" ";
+		}
+		
+		//CASO 2: Existe el comparendo, pero no tiene ningún tipo Particular o Público, por ende no se anexa el String de impresión.
+		if(contadorParticular!=0 || contadorPublico!=0)
+		{
+			impresion+=infraccion+espacios1+" | "+contadorParticular+espacios2+" | "+contadorPublico+"\n";
 		}
 		int noCumplen=contadorTotalInfracciones-contadorTotalInfraccionesCumplen;
 		impresion+="\nEl número total de infracciones fue de: "+contadorTotalInfracciones;
@@ -492,39 +529,71 @@ public class Modelo {
 	}
 
 	/**
-	 * Da la cantidad de infracciones de un tipo de servicio dado.
-	 * @param inf infraccion que se quiere contar
-	 * @param serv servicio de la infracción
-	 * @return cantidad de infracciones de un tipo en una fecha dada.
-	 */
-	public int contarInfraccionesPorServicio(String serv, String inf )
-	{
-		return 0;
-	}
-
-	/**
 	 * Método que se encarga de solucionar el requerimiento 1C
 	 * @param localidad localidad de los comparendos
 	 * @param fechaInicial fecha inicial intervalo tiempo
 	 * @param fechaFinal fecha final intervalo tiempo
 	 * @return tabal que dice la cantidad de infracciones dada una localidad y un intervalo de tiempo.
 	 */
-	public String darNumeroComparendosPorInfraccionEnLocalidadYFecha(String localidad, String fechaInicial, String fechaFinal)
+	public String darNumeroComparendosPorInfraccionEnLocalidadYFecha(String localidad, Date fechaInicial, Date fechaFinal)
 	{
-		return null;
-	}
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
 
-	/**
-	 * Da la cantidad de infracciones de una localidad en un intervalo de tiempo dado. 
-	 * @param inf infraccion que se quiere contar
-	 * @param localidad localidad de la infraccion
-	 * @param fechaInicial fecha inicial intervalo
-	 * @param fechaFinal fecha final intervalo
-	 * @return cantidad infracciones en la localidad en el intervalo de tiempo dado
-	 */
-	public int cantidadInfraccionesPorLocalidadEIntervaloTiempoDado(String inf, String localidad, String fechaInicial, String fechaFinal)
-	{
-		return 0;
+		String mensaje = "Comparación de comparendos en "+localidad+" del "+sdf.format(fechaInicial)+" al "+sdf.format(fechaFinal)+
+				         "\nInfracción | #Comparendos\n";	
+		
+
+		Comparable[] com = listaComparendos.darArreglo();
+		Comparendo.ComparadorXInfraccionAscendente compXInfraccion = new Comparendo.ComparadorXInfraccionAscendente();
+		Ordenamientos.mergeSort(com, compXInfraccion);
+		
+		Comparendo cp = (Comparendo) com[0];
+		String infraccion = cp.darInfraccion();
+		int contador = 0;
+
+		for (int i = 0; i < com.length; i++)
+		{
+			cp = (Comparendo) com[i];
+
+			if(cp.darLocalidad().equalsIgnoreCase(localidad)&&cp.darFecha().after(fechaInicial)&&cp.darFecha().before(fechaFinal))
+			{
+				if(cp.darInfraccion().compareTo(infraccion)==0)
+				{
+					contador++;
+				}
+				else
+				{
+
+					if(contador!=0)
+					{
+						String espacios1="";
+						for(int j=0;j<10-infraccion.length(); ++j)
+						{
+							espacios1+=" ";
+						}
+						
+						mensaje+=infraccion+espacios1+" | "+contador+"\n";
+					}		
+
+					infraccion = cp.darInfraccion();
+
+					contador=1;
+				}
+			}	
+		}
+
+		if(contador!=0)
+		{
+			String espacios1="";
+			for(int j=0;j<11-infraccion.length(); ++j)
+			{
+				espacios1+=" ";
+			}
+			
+			mensaje+=infraccion+espacios1+"| "+contador+"\n";
+		}
+		
+		return mensaje;
 	}
 
 	/**
@@ -534,9 +603,66 @@ public class Modelo {
 	 * @param fechaFinal fecha final intervalo.
 	 * @return Tabla con N infracciones con más repeticiones en un intervalo de tiempo, ordenadas de mayor a menor según la cantidad de comparendos que tienen la infracción.
 	 */
-	public String darNCodigosInfraccionConMasInfraccionesEnFecha(int n, String fechaInicial, String fechaFinal)
+	public String darNCodigosInfraccionConMasInfraccionesEnFecha(int n, Date fechaInicial, Date fechaFinal)
 	{
-		return null;
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+
+		String mensaje = "Ranking de las "+n+" mayores infracciones del "+sdf.format(fechaInicial)+" al "+sdf.format(fechaFinal)+
+				         "\nInfracción | #Comparendos\n";	
+		
+
+		Comparable[] com = listaComparendos.darArreglo();
+		Comparendo.ComparadorXInfraccionAscendente compXInfraccion = new Comparendo.ComparadorXInfraccionAscendente();
+		Ordenamientos.mergeSort(com, compXInfraccion);
+		
+		Comparendo cp = (Comparendo) com[0];
+		ListaEncadenada<Comparendo> cantidades = new ListaEncadenada<Comparendo>();
+		String infraccion = cp.darInfraccion();
+		int contador = 0;
+		
+		for (int i = 0; i < com.length; i++)
+		{
+			cp = (Comparendo) com[i];
+
+			if(cp.darFecha().after(fechaInicial)&&cp.darFecha().before(fechaFinal))
+			{
+				if(cp.darInfraccion().compareTo(infraccion)==0)
+				{
+					contador++;
+				}
+				else
+				{
+
+					if(contador!=0)
+					{
+						cantidades.agregarOrdenado(new Comparendo(contador, null, "", "", "", "", infraccion, "", 0, 0));
+					}
+						
+					
+					infraccion = cp.darInfraccion();
+
+					contador=1;
+				}
+			}	
+		}
+		
+		int i = 0;
+		while(cantidades.darLongitud()>0&&i!=n)
+		{
+			Comparendo c = cantidades.eliminarUltimo();
+
+			String espacios1="";
+			for(int j=0;j<11-c.darInfraccion().length(); ++j)
+			{
+				espacios1+=" ";
+			}
+			
+			mensaje+=c.darInfraccion()+espacios1+"| "+c.darId()+"\n";
+			
+			i++;
+		}
+		
+		return mensaje;
 	}
 
 	/**
@@ -545,7 +671,96 @@ public class Modelo {
 	 */
 	public String generarASCII()
 	{
-		return null;
+		
+        String mensaje = "Aproximación del número de comparendos por localidad\n";
+
+		Comparable[] com = listaComparendos.darArreglo();
+		Comparendo.ComparadorXLocalidad compXLocalidad = new Comparendo.ComparadorXLocalidad();
+		Ordenamientos.mergeSort(com, compXLocalidad);
+
+		Comparendo cp = (Comparendo) com[0];
+		String localidad = cp.darLocalidad();
+		int contador = 0;
+
+		for (int i = 0; i < com.length; i++)
+		{
+			cp = (Comparendo) com[i];
+
+			if(cp.darLocalidad().compareTo(localidad)==0)
+			{
+				contador++;
+			}
+			else
+			{
+				String auxiliar = "";
+				if(contador!=0)
+				{
+					
+					String asteriscos ="";
+					int nAsteriscos = contador/50;
+					if(contador%50!=0)
+						asteriscos+="*";
+					
+					int ast = 0;
+					while(ast<nAsteriscos)
+					{
+						asteriscos+="*";
+						ast++;
+					}
+						
+
+					
+					auxiliar=asteriscos;
+
+				}	
+				else
+				{
+					auxiliar="Sin comparendos";
+				}
+				String lineas="";
+				for(int j=0;j<15-localidad.length(); ++j)
+				{
+					lineas+="-";
+				}
+				mensaje+=localidad+lineas+"|"+auxiliar+"\n";
+				
+				localidad = cp.darLocalidad();
+				contador = 1;
+
+			}
+		}
+
+		String auxiliar = "";
+		if(contador!=0)
+		{
+			
+			String asteriscos ="";
+			int nAsteriscos = contador/50;
+			if(contador%50!=0)
+				asteriscos+="*";
+			
+			int ast = 0;
+			while(ast<nAsteriscos)
+			{
+				asteriscos+="*";
+				ast++;
+			}
+				
+			auxiliar = asteriscos;
+
+		}	
+		else
+		{
+			auxiliar="Sin comparendos";
+		}
+		String lineas="";
+		for(int j=0;j<15-localidad.length(); ++j)
+		{
+			lineas+="-";
+		}
+		mensaje+=localidad+lineas+"|"+auxiliar+"\n";
+		
+		return mensaje;
 	}
 
 	/**

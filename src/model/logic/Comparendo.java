@@ -180,6 +180,13 @@ public class Comparendo implements Comparable<Comparendo>
 			return c2.darInfraccion().compareTo(c1.darInfraccion());
 		}
 	}
+    
+    public static class ComparadorXLocalidad implements Comparator<Comparendo>{
+		
+		public int compare(Comparendo c1, Comparendo c2){
+			return c1.darLocalidad().compareTo(c2.darLocalidad());
+		}
+	}
 	
 	@Override
 	/**

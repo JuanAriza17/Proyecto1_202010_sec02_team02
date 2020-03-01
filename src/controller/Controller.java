@@ -20,7 +20,7 @@ public class Controller {
 	/* Instancia de la Vista*/
 	private View view;
 
-	public final static String RUTA = "./data/comparendos_dei_2018.geojson";
+	public final static String RUTA = "./data/comparendos_dei_2018_small.geojson";
 
 
 	/**
@@ -36,6 +36,7 @@ public class Controller {
 	public void run() 
 	{
 		Scanner lector = new Scanner(System.in);
+		lector.useDelimiter("\n");
 		boolean cargado = false;
 		boolean fin = false;
 		Comparendo c = null;
@@ -46,7 +47,7 @@ public class Controller {
 			view.printMenu();
 			try
 			{
-				int option = Integer.parseInt(lector.next());				
+				int option = Integer.parseInt(lector.nextLine());				
 				switch(option){
 				case 0:
 					view.printMessage("--------- \nCargando lista de comparendos en la lista ");
@@ -78,7 +79,9 @@ public class Controller {
 					if(cargado)
 					{
 						view.printMessage("Ingrese la localidad:");
-						String localidad = lector.next();
+						
+						String localidad = lector.nextLine();
+												
 						c = modelo.darComparendoLocalidad(localidad);
 
 						if(c==null)
@@ -103,7 +106,7 @@ public class Controller {
 					if(cargado)
 					{
 						view.printMessage("Ingrese una fecha de la forma yyyy/MM/dd");
-						String f = lector.next();
+						String f = lector.nextLine();
 						try
 						{
 							Date fecha = parser.parse(f);
@@ -144,10 +147,10 @@ public class Controller {
 					if(cargado)
 					{
 						view.printMessage("Ingrese la primera fecha de la forma yyyy/MM/dd");
-						String f1 = lector.next();
+						String f1 = lector.nextLine();
 
 						view.printMessage("Ingrese la segunda fecha de la forma yyyy/MM/dd");
-						String f2 = lector.next();
+						String f2 = lector.nextLine();
 
 						try
 						{
@@ -176,7 +179,7 @@ public class Controller {
 					view.printMessage("--------- \n ");
 
 					view.printMessage("Ingrese una infracción determinada:");	
-					String infraccion4 = lector.next();		
+					String infraccion4 = lector.nextLine();		
 					try
 					{
 						Comparendo buscado=modelo.darComparendoInfraccion(infraccion4);
@@ -192,7 +195,7 @@ public class Controller {
 					view.printMessage("--------- \n ");
 					
 					view.printMessage("Ingrese una infracción determinada:");	
-					String infraccion5 = lector.next();
+					String infraccion5 = lector.nextLine();
 					String impresion="";
 					int contador=0;
 					try
@@ -232,14 +235,42 @@ public class Controller {
 
 					if(cargado)
 					{
+						view.printMessage("Ingrese la localidad que le interesa:");
+						String localidad = lector.nextLine();
+						
+						view.printMessage("Debe ingresar las fechas en orden cronológico\n");
+						view.printMessage("Ingrese la primera fecha de la forma yyyy/MM/dd:");
+						String f1 = lector.nextLine();
 
+						view.printMessage("Ingrese la segunda fecha de la forma yyyy/MM/dd:");
+						String f2 = lector.nextLine();
+
+						try
+						{
+							Date fechaInicial = parser.parse(f1);
+							Date fechaFinal = parser.parse(f2);
+							
+							if(fechaInicial.compareTo(fechaFinal)>0)
+							{
+								view.printMessage("Las fechas se ingresaron en el orden incorrecto");
+							}
+							else
+							{
+								String mensaje = modelo.darNumeroComparendosPorInfraccionEnLocalidadYFecha(localidad, fechaInicial, fechaFinal);
+
+								view.printMessage(mensaje);
+							}
+						}
+						catch(ParseException e)
+						{
+							view.printMessage("No ingresó la fecha en el formato correcto");
+						}
 					}
 					else
 					{
 						view.printMessage("No ha inicializado la lista");
 					}
 
-					view.printMessage("Aún no se ha implementda el requerimiento");						
 					break;
 
 				case 8:
@@ -247,14 +278,46 @@ public class Controller {
 
 					if(cargado)
 					{
+						view.printMessage("Ingrese la cantidad de infracciones que le interesa:");
+						int n = Integer.parseInt(lector.nextLine());
+						
+						view.printMessage("Debe ingresar las fechas en orden cronológico\n");
+						view.printMessage("Ingrese la primera fecha de la forma yyyy/MM/dd:");
+						String f1 = lector.nextLine();
 
+						view.printMessage("Ingrese la segunda fecha de la forma yyyy/MM/dd:");
+						String f2 = lector.nextLine();
+
+						try
+						{
+							Date fechaInicial = parser.parse(f1);
+							Date fechaFinal = parser.parse(f2);
+							
+							if(fechaInicial.compareTo(fechaFinal)>0)
+							{
+								view.printMessage("Las fechas se ingresaron en el orden incorrecto");
+							}
+							else
+							{
+								String mensaje = modelo.darNCodigosInfraccionConMasInfraccionesEnFecha(n, fechaInicial, fechaFinal);
+
+								view.printMessage(mensaje);
+							}
+						}
+						catch(ParseException e)
+						{
+							view.printMessage("No ingresó la fecha en el formato correcto");
+						}
+						catch(NumberFormatException e)
+						{
+							view.printMessage("Ingrese una cantidad válida de infracciones");
+						}
 					}
 					else
 					{
 						view.printMessage("No ha inicializado la lista");
 					}
 
-					view.printMessage("Aún no se ha implementado el requerimiento");						
 					break;
 
 				case 9:
@@ -262,14 +325,14 @@ public class Controller {
 
 					if(cargado)
 					{
-
+						String mensaje = modelo.generarASCII();
+						view.printMessage(mensaje);
 					}
 					else
 					{
 						view.printMessage("No ha inicializado la lista");
 					}
 
-					view.printMessage("Aún no se ha implementda el requerimiento");						
 					break;
 
 				case 10: 

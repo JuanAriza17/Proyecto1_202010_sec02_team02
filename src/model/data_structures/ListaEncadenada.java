@@ -82,10 +82,9 @@ public class ListaEncadenada<T extends Comparable<T>> implements IListaEncadenad
 			}
 
 			NodoLista<T> nuevo = new NodoLista<T>(dato);
-			if(act.darSiguiente()==null)
-			{
-				ultimo = nuevo;
-			}
+			
+			ultimo = nuevo;
+			
 			act.cambiarSiguiente(nuevo);
 			nuevo.cambiarAnterior(act);
 			longitud++;
@@ -347,6 +346,59 @@ public class ListaEncadenada<T extends Comparable<T>> implements IListaEncadenad
 
 		return elemento;
 	}
+	
+	/** Agregar un elemento usando el orden definido por el tipo T (metodo compareTo(T))
+	* @param elemP nuevo elemento
+	* @return true si el elemento es agregado; false si el elemento es repetido
+	*/
+	public void agregarOrdenado(T elemP)
+	{
+		boolean respuesta = false;
+		NodoLista<T> nuevo = new NodoLista<T>(elemP);
+		if ( primero == null )
+		{
+			primero = nuevo;
+			ultimo = primero;
+			respuesta = true;
+		}
+		else if ( elemP.compareTo( primero.darElemento( ) ) < 0)
+		{
+			nuevo.cambiarSiguiente( primero );
+			primero.cambiarAnterior(nuevo);
+			primero = nuevo;
+			respuesta = true;
+		}
+		else if(elemP.compareTo(ultimo.darElemento())>0)
+		{
+			nuevo.cambiarAnterior(ultimo);
+			ultimo.cambiarSiguiente(nuevo);
+			ultimo = nuevo;
+			respuesta = true;
+		}
+		else if ( elemP.compareTo( primero.darElemento( ) ) > 0)
+		{ 
+			NodoLista<T> anterior = primero;
+			NodoLista<T> actual = primero.darSiguiente( );
+			while ( actual != null && elemP.compareTo( actual.darElemento( ) ) > 0)
+			{ 
+				anterior = actual;
+				actual = actual.darSiguiente( );
+			}
+			if ( actual == null || elemP.compareTo( actual.darElemento( ) ) < 0)
+			{ 
+				anterior.cambiarSiguiente( nuevo );
+				nuevo.cambiarAnterior(anterior);
+				nuevo.cambiarSiguiente( actual );
+				if(actual!=null)
+					actual.cambiarAnterior(nuevo);
+					
+				respuesta = true;
+			}
+		}
+		if ( respuesta ) { longitud++; }
+
+	}
+
 
 	/**
 	 * Método que retorna un arreglo de la lista.
