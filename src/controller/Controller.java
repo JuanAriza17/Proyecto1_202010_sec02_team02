@@ -113,10 +113,14 @@ public class Controller {
 								}
 								else
 								{
+									int i = 0;
 									for(Comparable com: arreglo)
 									{
 										view.printMessage(com.toString());
+										i++;
 									}
+									
+									view.printMessage("Se encontraron "+i+" comparendos");
 								}
 							}
 							catch(ParseException e)

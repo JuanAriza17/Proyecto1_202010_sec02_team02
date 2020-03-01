@@ -285,7 +285,9 @@ public class Modelo {
 	 */
 	public String compararInfraccionPorFecha(Date fecha1, Date fecha2)
 	{
-		String mensaje = "Infracción   |"+fecha1+"     |"+fecha2.toString()+"\n";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+
+		String mensaje = "Infracción   |"+sdf.format(fecha1)+"     |"+sdf.format(fecha2)+"\n";
 		IListaEncadenada<Comparendo> lista = new ListaEncadenada<Comparendo>();
 		
 		NodoLista<Comparendo> actual = listaComparendos.darPrimero();
@@ -317,14 +319,14 @@ public class Modelo {
 				{
 					contador1++;
 				}
-				else if(cp.darFecha().compareTo(fecha2)==0)
+				else
 				{
 					contador2++;
 				}
 			}
 			else
 			{
-				mensaje+=infraccion+"    |"+contador1+"    |"+contador2 +"\n";
+				mensaje+=infraccion+"          |"+contador1+"              |"+contador2 +"\n";
 				
 				infraccion = cp.darInfraccion();
 				
@@ -333,7 +335,7 @@ public class Modelo {
 					contador1=1;
 					contador2=0;
 				}
-				else if(cp.darFecha().compareTo(fecha2)==0)
+				else 
 				{
 					contador2=1;
 					contador1=0;
@@ -341,7 +343,7 @@ public class Modelo {
 			}
 		}
 		
-		mensaje+=infraccion+"    |"+contador1+"    |"+contador2;
+		mensaje+=infraccion+"          |"+contador1+"              |"+contador2 +"\n";
 		
 		
 		return mensaje;

@@ -1,5 +1,6 @@
 package model.logic;
 
+import java.text.SimpleDateFormat;
 import java.util.Comparator;
 import java.util.Date;
 
@@ -193,7 +194,9 @@ public class Comparendo implements Comparable<Comparendo>
 	 * Da la informacion del comparendo
 	 */
 	public String toString() {
-		return "Comparendo [OBJECTID: " + id + ", FECHA: " + fecha + ", INFRACCION:" + infraccion
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+		return "Comparendo [OBJECTID: " + id + ", FECHA: " + sdf.format(fecha) + ", INFRACCION:" + infraccion
 				+ ", VEHICULO:" + vehiculo + ", SERVICIO:" + servicio + ", LOCALIDAD: " + localidad;
 	}
 
