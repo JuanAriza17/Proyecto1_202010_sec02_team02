@@ -309,7 +309,7 @@ public class Modelo {
 				{
 					contador1++;
 				}
-				else if(cp.darFecha().compareTo(fecha2)==0)
+				if(cp.darFecha().compareTo(fecha2)==0)
 				{
 					contador2++;
 				}
