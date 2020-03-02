@@ -12,7 +12,7 @@ public class View
 	    
 		public void printMenu()
 		{
-			System.out.println("0. (Requerimiento 0) Cargar Comparendos en la Lista.");
+			System.out.println("0. (Requerimiento 00) Cargar Comparendos en la Lista.");
 			System.out.println("1. (Requerimiento 1A) Dar primer comparendo que concuerde con la localidad dada.");
 			System.out.println("2. (Requerimiento 2A) Dar todos comparendos que fueron emitidos a la fecha y hora dada .");
 			System.out.println("3. (Requerimiento 3A) Dar una tabla de infracciones ordenadas alfabéticamente, según dos fechas dadas.");
