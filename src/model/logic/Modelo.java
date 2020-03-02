@@ -411,7 +411,7 @@ public class Modelo {
 		{
 			if(actual.darElemento().darInfraccion().equals(pInfraccion))
 			{
-				lista.agregar(actual.darElemento());
+				lista.agregarFinal(actual.darElemento());
 				existe=true;
 			}
 			actual=actual.darSiguiente();
@@ -425,7 +425,6 @@ public class Modelo {
 		//Ordena un arreglo con los datos de los comparendos por el comparador de fecha.
 		Comparable[] arreglo=lista.darArreglo();
 		Ordenamientos.mergeSort(arreglo, compXFecha);
-
 
 		return arreglo;
 	}
@@ -814,4 +813,6 @@ public class Modelo {
 			listaComparendos.agregarFinal(c);
 		}		
 	}
+	
+	
 }

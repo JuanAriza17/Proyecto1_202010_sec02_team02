@@ -196,19 +196,18 @@ public class Controller {
 					
 					view.printMessage("Ingrese una infracción determinada:");	
 					String infraccion5 = lector.nextLine();
-					String impresion="";
 					int contador=0;
 					try
 					{
-						Comparable[] lista=modelo.darComparendosOrdenadosPorFechaConInfraccion(infraccion5);
-						for(int i=0; i<lista.length;++i)
+						
+						Comparable[] comparendos=modelo.darComparendosOrdenadosPorFechaConInfraccion(infraccion5);
+						for(Comparable comp: comparendos)
 						{
-							Comparendo actual=(Comparendo) lista[i];
-							impresion+=actual.toString()+"\n";
+							view.printMessage(comp.toString());
 							++contador;
 						}
-						view.printMessage(impresion);
-						view.printMessage("\nEl número total de comparendos en la consulta es de: "+ contador);
+						view.printMessage("\nEl número total de comparendos encontrados con el código "+infraccion5+ " fue de: "+contador+".\n");
+						
 						
 					}
 					catch (Exception e)
