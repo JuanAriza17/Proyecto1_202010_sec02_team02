@@ -164,7 +164,7 @@ public class Controller {
 						}
 						catch(ParseException e)
 						{
-							view.printMessage("No ingresó la fecha en el formato correcto");
+							view.printMessage("No ingresó la fecha en el formato correcto.\n");
 						}
 					}
 					else
