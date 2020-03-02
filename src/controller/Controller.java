@@ -20,7 +20,7 @@ public class Controller {
 	/* Instancia de la Vista*/
 	private View view;
 
-	public final static String RUTA = "./data/comparendos_dei_2018_small.geojson";
+	public final static String RUTA = "./data/comparendos_dei_2018.geojson";
 
 
 	/**
@@ -95,7 +95,7 @@ public class Controller {
 					}
 					else
 					{
-						view.printMessage("No ha inicializado la lista");
+						view.printMessage("Por favor inialice la lista.\n");
 					}
 
 					break;
@@ -114,7 +114,7 @@ public class Controller {
 
 							if(arreglo==null||arreglo.length==0)
 							{
-								view.printMessage("No se encontraron comparendos en esa fecha");
+								view.printMessage("No se encontraron comparendos en esa fecha.\n");
 							}
 							else
 							{
@@ -130,12 +130,12 @@ public class Controller {
 						}
 						catch(ParseException e)
 						{
-							view.printMessage("No ingresó la fecha en el formato correcto");
+							view.printMessage("No ingresó la fecha en el formato correcto.\n");
 						}
 					}
 					else
 					{
-						view.printMessage("No ha inicializado la lista");
+						view.printMessage("Por favor inialice la lista.\n");
 					}
 
 
@@ -169,7 +169,7 @@ public class Controller {
 					}
 					else
 					{
-						view.printMessage("No ha inicializado la lista");
+						view.printMessage("Por favor inialice la lista.\n");
 					}
 
 
@@ -268,7 +268,7 @@ public class Controller {
 					}
 					else
 					{
-						view.printMessage("No ha inicializado la lista");
+						view.printMessage("Por favor inialice la lista.\n");
 					}
 
 					break;
@@ -315,7 +315,7 @@ public class Controller {
 					}
 					else
 					{
-						view.printMessage("No ha inicializado la lista");
+						view.printMessage("Por favor inialice la lista.\n");
 					}
 
 					break;
@@ -330,7 +330,7 @@ public class Controller {
 					}
 					else
 					{
-						view.printMessage("No ha inicializado la lista");
+						view.printMessage("Por favor inialice la lista.\n");
 					}
 
 					break;
@@ -348,7 +348,7 @@ public class Controller {
 			}
 			catch(NumberFormatException e)
 			{
-				view.printMessage("Por favor ingrese un número");
+				view.printMessage("Por favor ingrese un número.\n");
 			}
 
 		}
