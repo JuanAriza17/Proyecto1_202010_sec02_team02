@@ -125,7 +125,7 @@ public class Controller {
 									i++;
 								}
 
-								view.printMessage("Se encontraron "+i+" comparendos");
+								view.printMessage("Se encontraron "+i+" comparendos.\n");
 							}
 						}
 						catch(ParseException e)
