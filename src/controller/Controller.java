@@ -79,9 +79,9 @@ public class Controller {
 					if(cargado)
 					{
 						view.printMessage("Ingrese la localidad:");
-						
+
 						String localidad = lector.nextLine();
-												
+
 						c = modelo.darComparendoLocalidad(localidad);
 
 						if(c==null)
@@ -166,6 +166,10 @@ public class Controller {
 						{
 							view.printMessage("No ingresó la fecha en el formato correcto.\n");
 						}
+						catch(Exception e)
+						{
+							view.printMessage(e.getMessage());
+						}
 					}
 					else
 					{
@@ -193,13 +197,13 @@ public class Controller {
 
 				case 5:
 					view.printMessage("--------- \n ");
-					
+
 					view.printMessage("Ingrese una infracción determinada:");	
 					String infraccion5 = lector.nextLine();
 					int contador=0;
 					try
 					{
-						
+
 						Comparable[] comparendos=modelo.darComparendosOrdenadosPorFechaConInfraccion(infraccion5);
 						for(Comparable comp: comparendos)
 						{
@@ -207,8 +211,8 @@ public class Controller {
 							++contador;
 						}
 						view.printMessage("\nEl número total de comparendos encontrados con el código "+infraccion5+ " fue de: "+contador+".\n");
-						
-						
+
+
 					}
 					catch (Exception e)
 					{
@@ -235,8 +239,9 @@ public class Controller {
 					if(cargado)
 					{
 						view.printMessage("Ingrese la localidad que le interesa:");
+ 
 						String localidad = lector.nextLine();
-						
+
 						view.printMessage("Debe ingresar las fechas en orden cronológico\n");
 						view.printMessage("Ingrese la primera fecha de la forma yyyy/MM/dd:");
 						String f1 = lector.nextLine();
@@ -248,16 +253,28 @@ public class Controller {
 						{
 							Date fechaInicial = parser.parse(f1);
 							Date fechaFinal = parser.parse(f2);
-							
+
 							if(fechaInicial.compareTo(fechaFinal)>0)
 							{
-								view.printMessage("Las fechas se ingresaron en el orden incorrecto");
+								view.printMessage("Las fechas se ingresaron en el orden incorrecto.\n");
+							}
+							else if(fechaInicial.compareTo(fechaFinal)==0)
+							{
+								view.printMessage("La fecha inicial y final no pueden ser la misma.\n");
 							}
 							else
 							{
-								String mensaje = modelo.darNumeroComparendosPorInfraccionEnLocalidadYFecha(localidad, fechaInicial, fechaFinal);
+								String mensaje;
+								try 
+								{
+									mensaje = modelo.darNumeroComparendosPorInfraccionEnLocalidadYFecha(localidad, fechaInicial, fechaFinal);
+									view.printMessage(mensaje);
+								} 
+								catch (Exception e) {
+									view.printMessage(e.getMessage());
+								}
 
-								view.printMessage(mensaje);
+								
 							}
 						}
 						catch(ParseException e)
@@ -279,7 +296,7 @@ public class Controller {
 					{
 						view.printMessage("Ingrese la cantidad de infracciones que le interesa:");
 						int n = Integer.parseInt(lector.nextLine());
-						
+
 						view.printMessage("Debe ingresar las fechas en orden cronológico\n");
 						view.printMessage("Ingrese la primera fecha de la forma yyyy/MM/dd:");
 						String f1 = lector.nextLine();
@@ -291,7 +308,7 @@ public class Controller {
 						{
 							Date fechaInicial = parser.parse(f1);
 							Date fechaFinal = parser.parse(f2);
-							
+
 							if(fechaInicial.compareTo(fechaFinal)>0)
 							{
 								view.printMessage("Las fechas se ingresaron en el orden incorrecto");

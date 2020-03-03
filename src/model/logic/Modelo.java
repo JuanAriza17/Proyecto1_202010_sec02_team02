@@ -284,7 +284,7 @@ public class Modelo {
 	 * @param fecha2 segunda fecha que se quiere ver la cantidad de infracciones 
 	 * @return Tabla donde se ve la cantidad de infracciones, y estas están ordenadas alfabeticamente.
 	 */
-	public String compararInfraccionPorFecha(Date fecha1, Date fecha2)
+	public String compararInfraccionPorFecha(Date fecha1, Date fecha2) throws Exception
 	{
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
 		String mensaje = "Comparación de comparendos por Infracción en dos fechas\nInfracción | "+sdf.format(fecha1)+" | "+sdf.format(fecha2)+"\n";
@@ -357,6 +357,10 @@ public class Modelo {
 
 		}
 
+		if(mensaje.equals("Comparación de comparendos por Infracción en dos fechas\nInfracción | "+sdf.format(fecha1)+" | "+sdf.format(fecha2)+"\n"))
+		{
+			throw new Exception("No se encontró ningún comparendo por la fecha buscada.\n");
+		}
 		return mensaje;
 	}
 
@@ -379,7 +383,7 @@ public class Modelo {
 			NodoLista<Comparendo> actual=listaComparendos.darPrimero();
 			while(actual!=null)
 			{
-				if(actual.darElemento().darInfraccion().equals(pInfraccion))
+				if(actual.darElemento().darInfraccion().compareToIgnoreCase(pInfraccion)==0)
 				{
 					return actual.darElemento();
 				}
@@ -409,7 +413,7 @@ public class Modelo {
 		//Se recorre la lista en busca de comparendos con la infracción.
 		while(actual!=null)
 		{
-			if(actual.darElemento().darInfraccion().equals(pInfraccion))
+			if(actual.darElemento().darInfraccion().compareToIgnoreCase(pInfraccion)==0)
 			{
 				lista.agregarFinal(actual.darElemento());
 				existe=true;
@@ -534,7 +538,7 @@ public class Modelo {
 	 * @param fechaFinal fecha final intervalo tiempo
 	 * @return tabal que dice la cantidad de infracciones dada una localidad y un intervalo de tiempo.
 	 */
-	public String darNumeroComparendosPorInfraccionEnLocalidadYFecha(String localidad, Date fechaInicial, Date fechaFinal)
+	public String darNumeroComparendosPorInfraccionEnLocalidadYFecha(String localidad, Date fechaInicial, Date fechaFinal) throws Exception
 	{
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
 
@@ -549,7 +553,6 @@ public class Modelo {
 		Comparendo cp = (Comparendo) com[0];
 		String infraccion = cp.darInfraccion();
 		int contador = 0;
-
 		for (int i = 0; i < com.length; i++)
 		{
 			cp = (Comparendo) com[i];
@@ -578,9 +581,10 @@ public class Modelo {
 
 					contador=1;
 				}
-			}	
+			}
+			
 		}
-
+		
 		if(contador!=0)
 		{
 			String espacios1="";
@@ -590,6 +594,12 @@ public class Modelo {
 			}
 			
 			mensaje+=infraccion+espacios1+"| "+contador+"\n";
+		}
+		
+		if(mensaje.equals("Comparación de comparendos en "+localidad+" del "+sdf.format(fechaInicial)+" al "+sdf.format(fechaFinal)+
+		         "\nInfracción | #Comparendos\n"))
+		{
+			throw new Exception("No se encontraron comparendos en el intervalo de tiempo dado.\n");
 		}
 		
 		return mensaje;
